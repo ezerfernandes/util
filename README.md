@@ -35,6 +35,29 @@ you can iterate over the components with `for` or pipe them into
 `grep` or whatever. A future version will perform the opposite
 transformation.
 
+`count` generates a report of the unique lines in the input, sorted by
+frequency of occurrence.
+
+`sample` selects and prints a random sample of lines from the input.
+`sample 0.23` and `sample 23%` select each line with probability of
+23%.  (They do not guarantee to emit exactly 23% of all lines.)
+`sample 23` selects and emits exactly 23 lines, using the standard
+reservoir sampling algorithm.
+
+`lr` performs rudimentary statistical analysis of its input,
+including, primarily, linear regression.  The input should be two
+columns, of X and Y values, or one column, of Y values (and the X
+values are implied to be 1, 2, 3, etc.).  The command then prints out
+the means, variances, and standard deviations of the inputs, the
+correlation between the two columns, and the slope and intercept of
+the best-fit line through the data.  The `-lr` flag suppresses
+everything but the linear regression results; the `-mean` flag
+suppresses everything but the means, and so forth.
+
+`yorn` reads lines from standard input, prompts _on the terminal_ for
+a 'y' or 'n' response, and prints the selected lines on standard
+utput.
+
 ## Not validated yet
 
 `addup` is a filter that adds up a series of numbers and prints the
@@ -45,14 +68,6 @@ field in each line.
 below.  It guesses which files you might have meant, presents a menu
 to let you select which ones you actually meant, and then opens emacs
 buffers for those files.
-
-`autofile` is a utility for the MH mail system.  It scans the current
-folder and applies a set of rules and actions to the mail it finds,
-reflining all the messages mathing certain patterns into certain
-target folders.
-
-`count` generates a report of the unique lines in the input, sorted by
-frequency of occurrence.
 
 `date-arith` takes an argument list like `2014-12-23 +12`, interprets
 `+12` as “plus 12 days”, and prints the resulting date in the same
@@ -125,26 +140,12 @@ easily do `mv $(lastdl) .` or something of that sort. The shell
 mis-handles filenames that contain whitespace, so `lastdl` will rename
 the file to a whitespace-less one before printing the name.
 
-`lr` performs rudimentary statistical analysis of its input,
-including, primarily, linear regression.  The input should be two
-columns, of X and Y values, or one column, of Y values (and the X
-values are implied to be 1, 2, 3, etc.).  The command then prints out
-the means, variances, and standard deviations of the inputs, the
-correlation between the two columns, and the slope and intercept of
-the best-fit line through the data.  The `-lr` flag suppresses
-everything but the linear regression results; the `-mean` flag
-suppresses everything but the means, and so forth.
-
 `numfilter` copies standard input to standard output, but one or more
 of the fields are examines for numerals, which are then reformatted to
 human-friendly format. Use `-f` to select which field.  Use `-F`
 to select which formatter is used.  The default converts `1234` to
 `1.2k` and similarly.  Use `-b` to use powers of 2 instead of powers
 of 10.
-
-`pgrep` is an implementation of `grep` in Perl that uses Perl regular
-expressions, implements a couple of features I use a lot, and
-eliminates a vast number of features I never use.
 
 `psgrep` runs `ps` and greps the output, but leaves intact the header
 line that explains what the columns mean.  It also omits itself and
@@ -170,12 +171,6 @@ jobs in parallel.  [This version, by Aaron
 Crane](http://aaroncrane.co.uk/2008/07/runN/), has a better interface
 than [my original
 implementation](http://blog.plover.com/prog/runN.html).
-
-`sample` selects and prints a random sample of lines from the input.
-`sample 0.23` and `sample 23%` select each line with probability of
-23%.  (They do not guarantee to emit exactly 23% of all lines.)
-`sample 23` selects and emits exactly 23 lines, using the standard
-reservoir sampling algorithm.
 
 `shutup command args...` runs the comand with its standard output and
 standard error directed to `/dev/null`.  If the command wants to
@@ -216,10 +211,6 @@ different suffix.  For example, `mv $i $(suf $i .jpg)` moves `img.gif`
 to `img.jpg`.  People usually do this with `basename` but `suf` is
 shorter and easier.
 
-`title` sets the title of the current terminal window.  Multiple
-arguments are joined with spaces and used as the title.  With no
-arguments, it uses the current hostname.
-
 `trim` trims the trailing whitespace from each line in the files named
 in the arguments, and rewrites the files in place.  With no arguments,
 it works as a filter.
@@ -232,10 +223,6 @@ lines from standard input, trims off a trailing newline, if any, and
 runs the command `mv foo foo.bak` for each line `foo`.  If the
 command template contains no `%` signs, an extra `%` argument is
 implied at the end.
-
-`yorn` reads lines from standard input, prompts _on the terminal_ for
-a 'y' or 'n' response, and prints the selected lines on standard
-utput.
 
 `z command args...` tries to run the command on the specified
 arguments, but if any of those arguments appear to be compressed
