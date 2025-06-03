@@ -226,7 +226,9 @@ that insist on displaying files in chronological order.
 `suf` removes the suffix of a filename and replaces it with a
 different suffix.  For example, `mv $i $(suf $i .jpg)` moves `img.gif`
 to `img.jpg`.  People usually do this with `basename` but `suf` is
-shorter and easier.
+shorter and easier.  If what you want is to actually run `mv`, then as
+a special case you may you may use `suf --mv $i .jpg` and it will
+rename `$i` instead of printing the new name.
 
 `title` sets the title of the current terminal window.  Multiple
 arguments are joined with spaces and used as the title.  With no
