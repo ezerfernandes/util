@@ -195,6 +195,10 @@ communicate with the user, it must do so by another method.  `shutup`
 does _not_ detach the terminal, so the subcommand is free to redirect
 its output to `/dev/tty` if it likes
 
+`sleep-until TIME command args...`  sleeps until the specified time
+and then runs the command.  The time can look like HH:MM or just an
+hour number. It is interpreted in 24-hour time.
+
 `sort-natural` sorts its input lines like `sort`, but arranges to sort
 the numeric parts of the lines numerically. For example,
 
