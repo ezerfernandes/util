@@ -9,14 +9,28 @@
 #   suf foo.bar baz    => foo.baz
 #   suf foo baz        => foo.baz
 
+my $move;
+if ($ARGV[0] eq "--mv" || $ARGV[0] eq "-m") {
+    shift;
+    $move = 1;
+}
+
 @ARGV == 2 or @ARGV == 1 or usage();
-my ($file, $suf) = @ARGV;
-$file =~ s#\.[^./]*$##;
+my ($old, $suf) = @ARGV;
+my $base = $old;
+$base =~ s#\.[^./]*$##;
 
 if (defined $suf) {
-  print "$file.$suf\n";
+    $new = "$base.$suf";
 } else {
-  print "$file\n";
+    $new = $base;
+}
+
+if ($move) {
+    rename $old => $new
+        or die "Couldn't rename '$old' → '$new': $!";
+} else {
+    print $new, "\n";
 }
 
 sub usage {
