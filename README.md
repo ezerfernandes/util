@@ -30,6 +30,8 @@ prompting is over.  For example: `emacs $(ls | menupick)`.
 > to the next page of the menu, and `k` or `p` move to the previous
 > page.
 
+`pomo` is a pomodoro timer. `pomo 10` will do a 10 minutes countdown.
+
 `path` prints out your `$PATH` variable, one entry per line, so that
 you can iterate over the components with `for` or pipe them into
 `grep` or whatever. A future version will perform the opposite

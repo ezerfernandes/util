@@ -1,0 +1,57 @@
+#!/usr/bin/env python3
+
+import argparse
+import sys
+import time
+import datetime
+
+argparser = argparse.ArgumentParser(description='Pomodoro clock')
+argparser.add_argument('minutes', help='minutes')
+
+args = None
+
+def clock(minutes):
+    try:
+        total_seconds = int(minutes) * 60
+    except ValueError:
+        print(f"Error: '{minutes}' is not a valid number of minutes")
+        sys.exit(1)
+
+    if total_seconds <= 0:
+        print("Error: Minutes must be a positive number")
+        sys.exit(1)
+
+    print(f"🍅: {minutes} minutes")
+
+    try:
+        while total_seconds > 0:
+            # Calculate minutes and seconds remaining
+            mins, secs = divmod(total_seconds, 60)
+
+            # Format time display
+            time_display = f"{mins:02d}:{secs:02d}"
+
+            # Clear line and display countdown
+            print(f"\r⏰ Time remaining: {time_display}", end="", flush=True)
+
+            # Wait for 1 second
+            time.sleep(1)
+            total_seconds -= 1
+
+        # Timer finished
+        print("\r🎉 Pomodoro completed! Time's up! 🎉")
+
+        # Optional: Beep sound (if available)
+        try:
+            print("\a")  # ASCII bell character
+        except:
+            pass
+
+    except KeyboardInterrupt:
+        print("\n\n⏹️  Pomodoro timer stopped.")
+        sys.exit(0)
+
+if __name__ == '__main__':
+    args = argparser.parse_args()
+    clock(args.minutes)
+    exit(0)
