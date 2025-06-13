@@ -1,0 +1,82 @@
+#!/usr/bin/env python3
+
+#!/usr/bin/env python3
+
+import sys
+import time
+import os
+import argparse
+from datetime import datetime, timedelta
+
+def parse_time(time_str):
+    """Parse a time string in HH:MM format."""
+    try:
+        # Try HH:MM:SS format first
+        if time_str.count(':') == 1:
+            return datetime.strptime(time_str, '%H:%M').time()
+        elif time_str.count(':') == 0:
+            return datetime.strptime(time_str, '%H').time()
+        else:
+            raise ValueError("Invalid time format")
+    except ValueError:
+        print(f"Error: Invalid time format '{time_str}'. Use HH or HH:MM", file=sys.stderr)
+        sys.exit(1)
+
+def calculate_sleep_duration(target_time):
+    """Calculate how many seconds to sleep until the target time."""
+    now = datetime.now()
+    today = now.date()
+
+    # Create datetime object for target time today
+    target_datetime = datetime.combine(today, target_time)
+
+    # If target time has already passed today, schedule for tomorrow
+    if target_datetime <= now:
+        target_datetime += timedelta(days=1)
+
+    # Calculate sleep duration in seconds
+    sleep_duration = (target_datetime - now).total_seconds()
+    return sleep_duration, target_datetime
+
+def main():
+    parser = argparse.ArgumentParser(
+        description='Sleep until a specified time, then execute a command',
+        usage='%(prog)s TIME -- COMMAND [ARGS...]',
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog='''Examples:
+  %(prog)s 14:30 -- echo "Time to wake up!"
+  %(prog)s 09:15:30 -- python3 my_script.py
+  %(prog)s 00:00 -- /usr/local/bin/backup.sh'''
+    )
+
+    parser.add_argument('time',
+                       help='Target time in HH, HH:MM or HH:MM:SS format')
+    parser.add_argument('--verbose', '-v',
+                        help='Confirm selected wakeup time', action='store_true')
+
+    args, command_args = parser.parse_known_args()
+
+    if command_args[0] == "--":
+        command_args = command_args[1:]
+
+    if not command_args:
+        parser.error("No command specified")
+
+    target_time = parse_time(args.time)
+
+    sleep_duration, target_datetime = calculate_sleep_duration(target_time)
+
+    if args.verbose:
+        print(f"Sleeping until {target_datetime.strftime('%Y-%m-%d %H:%M:%S')} ({sleep_duration:.1f} seconds)",
+              file=sys.stderr)
+
+    time.sleep(sleep_duration)
+
+    # Raises exception on failure
+    try:
+        os.execvp(command_args[0], command_args)
+    except Exception as exc:
+        print(f"Couldn't run '{command_args[0]}': {exc}", file=sys.stderr)
+        exit(255)
+
+main()

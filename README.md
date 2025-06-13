@@ -180,6 +180,10 @@ communicate with the user, it must do so by another method.  `shutup`
 does _not_ detach the terminal, so the subcommand is free to redirect
 its output to `/dev/tty` if it likes
 
+`sleep-until TIME command args...`  sleeps until the specified time
+and then runs the command.  The time can look like HH:MM or just an
+hour number. It is interpreted in 24-hour time.
+
 `sort-natural` sorts its input lines like `sort`, but arranges to sort
 the numeric parts of the lines numerically. For example,
 
@@ -211,7 +215,9 @@ that insist on displaying files in chronological order.
 `suf` removes the suffix of a filename and replaces it with a
 different suffix.  For example, `mv $i $(suf $i .jpg)` moves `img.gif`
 to `img.jpg`.  People usually do this with `basename` but `suf` is
-shorter and easier.
+shorter and easier.  If what you want is to actually run `mv`, then as
+a special case you may you may use `suf --mv $i .jpg` and it will
+rename `$i` instead of printing the new name.
 
 `trim` trims the trailing whitespace from each line in the files named
 in the arguments, and rewrites the files in place.  With no arguments,
