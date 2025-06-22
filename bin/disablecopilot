@@ -1,0 +1,37 @@
+#!/bin/bash
+
+# Check if a parent directory was provided
+if [ -z "$1" ]; then
+  echo "Usage: $0 /path/to/parent"
+  exit 1
+fi
+
+PARENT_DIR="$1"
+
+# Validate that the provided path is a directory
+if [ ! -d "$PARENT_DIR" ]; then
+  echo "Error: '$PARENT_DIR' is not a valid directory."
+  exit 1
+fi
+
+# Search for all .git directories and process each project
+find "$PARENT_DIR" -type d -name ".git" | while read -r gitdir; do
+  projdir=$(dirname "$gitdir")
+  vscode_dir="$projdir/.vscode"
+  settings_file="$vscode_dir/settings.json"
+
+  mkdir -p "$vscode_dir"
+
+  if [ -e "$settings_file" ]; then
+    echo "Warning: $settings_file already exists. Skipping."
+  else
+    cat > "$settings_file" <<EOF
+{
+  "github.copilot.enable": {
+    "*": false
+  }
+}
+EOF
+    echo "Created $settings_file"
+  fi
+done
